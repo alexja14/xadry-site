@@ -12,9 +12,11 @@ export const site = {
 
   youtube: { channelId: 'UCMp-eXBL537Jfpn7zxDJz7g', handle: '@Adrian.Stefan7', url: 'https://www.youtube.com/@Adrian.Stefan7' },
   kick: { slug: 'adrianstefan7', url: 'https://kick.com/adrianstefan7' },
+  twitch: { login: 'xadry_', url: 'https://www.twitch.tv/xadry_' },
 
   links: [
     { id: 'kick', label: 'Kick', note: 'Live-urile principale', url: 'https://kick.com/adrianstefan7' },
+    { id: 'twitch', label: 'Twitch', note: 'Live-uri și VOD-uri', url: 'https://www.twitch.tv/xadry_' },
     { id: 'youtube', label: 'YouTube', note: 'Clipuri, gameplay și live-uri', url: 'https://www.youtube.com/@Adrian.Stefan7' },
     { id: 'tiktok', label: 'TikTok', note: 'Clipuri scurte și faze', url: 'https://www.tiktok.com/@adi_asz' },
     { id: 'instagram', label: 'Instagram', note: 'Stories și behind the scenes', url: 'https://www.instagram.com/adi_asz/' },
@@ -22,7 +24,7 @@ export const site = {
     { id: 'telegram', label: 'Telegram', note: 'Anunțuri și update-uri', url: 'https://t.me/adisgaminghub' },
   ],
 
-  about: 'Caterincă zi de zi, gameplay-uri puternice și momente de neuitat. Pe YouTube mă găsești ca @Adrian.Stefan7, iar live-urile principale sunt pe Kick.',
+  about: 'Caterincă zi de zi, gameplay-uri puternice și momente de neuitat. Pe YouTube mă găsești ca @Adrian.Stefan7, iar live-urile sunt pe Kick și Twitch.',
   onStream: [
     { title: 'CS2: Premier și FACEIT', text: 'RAGE PESTE RAGE, DAR TOT JUCĂM.' },
     { title: 'Caterincă', text: 'Faze de râs non-stop, cu chatul în rol principal.' },

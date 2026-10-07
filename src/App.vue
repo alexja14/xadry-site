@@ -60,6 +60,8 @@ async function copy(text) {
 }
 
 const link = Object.fromEntries(site.links.map((l) => [l.id, l]));
+// Discord și Telegram au carduri mari separate; în grilă rămân platformele de conținut.
+const contentLinks = site.links.filter((l) => !['discord', 'telegram'].includes(l.id));
 const nav = [['#live', 'Live'], ['#clipuri', 'Clipuri'], ['#program', 'Program'], ['#despre', 'Despre'], ['#comunitate', 'Comunitate']];
 const menuOpen = ref(false);
 const year = new Date().getFullYear();
@@ -118,7 +120,7 @@ const year = new Date().getFullYear();
       <header class="sec-head">
         <p class="eyebrow">Live</p>
         <h2>Prinde-mă pe stream</h2>
-        <p class="lead">Live-urile principale sunt pe Kick. Player-ul pornește doar când apeși, ca pagina să se încarce repede.</p>
+        <p class="lead">Live-urile principale sunt pe Kick, iar pe Twitch mă prinzi ca xAdry_. Player-ul pornește doar când apeși, ca pagina să se încarce repede.</p>
       </header>
       <div class="live-grid">
         <div class="player hud">
@@ -136,7 +138,7 @@ const year = new Date().getFullYear();
             <p class="countdown mono" aria-live="off">{{ countdown }}</p>
             <p class="small">{{ status.onAir ? 'rămas din intervalul de azi' : 'până începe' }} · ora României</p>
           </div>
-          <a v-for="id in ['kick', 'youtube', 'tiktok']" :key="id" class="watch-link" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
+          <a v-for="id in ['kick', 'twitch', 'youtube']" :key="id" class="watch-link" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
             <Icon :name="id" :size="22" />
             <span><strong>{{ link[id].label }}</strong><small>{{ link[id].note }}</small></span>
             <Icon name="arrow" :size="18" />
@@ -253,7 +255,7 @@ const year = new Date().getFullYear();
         </a>
       </div>
       <ul class="links-grid">
-        <li v-for="l in site.links" :key="l.id">
+        <li v-for="l in contentLinks" :key="l.id">
           <a :href="l.url" target="_blank" rel="noopener" :class="`p-${l.id}`">
             <Icon :name="l.id" :size="22" />
             <span><strong>{{ l.label }}</strong><small>{{ l.note }}</small></span>
