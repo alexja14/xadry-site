@@ -32,6 +32,16 @@ npm run dev        # http://localhost:5173
 npm run build      # aduce clipurile + construiește în dist/
 ```
 
+## Domeniul xadry.live
+
+| | Unde |
+|---|---|
+| Înregistrare | **Namecheap**. Expiră pe **14 decembrie 2026**, așa că trebuie reînnoit la timp (sau pornești reînnoirea automată). „Locked” = blocarea de transfer de la Namecheap (`clientTransferProhibited`), nu afectează DNS-ul sau deploy-ul. |
+| DNS | **Cloudflare** (`gail` și `leland.ns.cloudflare.com`), cu proxy activ (norișor portocaliu). HTTPS-ul îl face Cloudflare. |
+| Site | **acest repo** (`alexja14/xadry-site`), Settings → Pages → Custom domain = `xadry.live`. „Enforce HTTPS” rămâne oprit pe GitHub, pentru că HTTPS-ul îl face Cloudflare. Dacă îl pornești, apare o buclă de redirecturi. |
+
+Site-ul vechi (Vue + Tailwind) e neatins în repo-ul privat `alexja14/andy`. Ca să revii la el: scoți domeniul de aici, Settings → Pages → Custom domain → Remove, apoi îl pui în `andy`.
+
 ## Deploy cu GitHub Actions
 
 Workflow-ul e în `.github/workflows/deploy.yml`. Rulează:
