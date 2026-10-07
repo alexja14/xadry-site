@@ -1,0 +1,23 @@
+{
+  "name": "xadry-site",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Site-ul XADRY: live-uri, clipuri, program și comunitate",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "fetch-data": "node scripts/fetch-data.mjs",
+    "build": "node scripts/fetch-data.mjs && vite build",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.9",
+    "vite": "^8.3.3"
+  }
+}
