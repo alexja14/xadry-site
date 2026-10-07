@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { site } from './data/site.js';
 import videosData from './data/videos.json';
 import { DAYS, formatCountdown, nowIn, streamStatus } from './schedule.js';
-import NeonGrid from './components/NeonGrid.vue';
+import NeonTunnel from './components/NeonTunnel.vue';
 import Icon from './components/Icon.vue';
 import { setupMotion } from './motion.js';
 
@@ -75,6 +75,7 @@ const year = new Date().getFullYear();
 </script>
 
 <template>
+  <NeonTunnel />
   <div class="scroll-progress" aria-hidden="true"></div>
   <header class="nav" :class="{ open: menuOpen }">
     <div class="nav-inner">
@@ -100,7 +101,6 @@ const year = new Date().getFullYear();
   <main>
     <!-- HERO -->
     <section id="top" class="hero">
-      <NeonGrid />
       <div class="hero-inner">
         <a class="status-chip" :class="{ on: status.onAir }" :href="site.kick.url" target="_blank" rel="noopener">
           <span class="live-dot" :class="{ on: status.onAir }"></span>
