@@ -89,6 +89,8 @@ function resize() {
   dpr = Math.min(1.5, window.devicePixelRatio || 1);
   w = el.clientWidth;
   h = el.clientHeight;
+  // Tab în fundal sau fereastră încă fără mărime: așteptăm următorul resize.
+  if (!w || !h) return;
   el.width = Math.round(w * dpr);
   el.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -107,6 +109,7 @@ function line(x1, y1, x2, y2, rgb, a) {
 }
 
 function draw() {
+  if (!w || !h || !layer?.width) return;
   const cx = w / 2;
   const cy = h / 2;
   const k = h / 2;
@@ -122,7 +125,7 @@ function draw() {
   ctx.fillRect(0, 0, w, h);
 
   ctx.globalAlpha = intensity;
-  if (layer) ctx.drawImage(layer, 0, 0, w, h);
+  ctx.drawImage(layer, 0, 0, w, h);
   ctx.globalAlpha = 1;
 
   // Ramele tunelului: se apropie continuu; fiecare a treia are pereți magenta.

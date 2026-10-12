@@ -8,21 +8,18 @@ Site-ul de pe xadry.live, refăcut în stilul bannerului canalului: grila neon, 
 |---|---|---|
 | Clipuri YouTube | citite în browser prin proxy-uri publice (allorigins, codetabs), care cad des | aduse la build de GitHub Actions, la fiecare 6 ore, fără proxy |
 | Mărime JavaScript | ~590 KB (three.js pentru particule) | ~83 KB (32 KB comprimat), fundal pe canvas simplu |
-| Live | doar linkuri | player Kick pe pagină (pornește la click) + numărătoare până la următorul live, în ora României |
-| Program | listă | săptămâna întreagă, cu „Azi” și „Acum” evidențiate |
+| Live | doar linkuri | player Kick pe pagină (pornește la click) + linkuri Kick, Twitch, YouTube |
 | Share pe Discord/WhatsApp | fără previzualizare | imagine și titlu (Open Graph), cu bannerul XADRY |
 | Conținut | în cod | tot într-un singur fișier: `src/data/site.js` |
 
 ## Cum schimbi conținutul
 
 Totul e în `src/data/site.js`:
-- texte;
-- linkuri;
-- program (zile și ore);
-- regulile chatului;
-- setup-ul de CS2 (crosshair, sensibilitate, mouse).
+- texte (Despre, Comunitate);
+- linkuri (inclusiv invitația de Discord);
+- regulile chatului.
 
-Secțiunea Setup apare pe site doar după ce completezi măcar un câmp. Faci push pe `main`, iar site-ul se publică singur în 1–2 minute.
+Faci push pe `main`, iar site-ul se publică singur în 1–2 minute.
 
 ## Local
 

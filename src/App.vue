@@ -1,25 +1,12 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { site } from './data/site.js';
 import videosData from './data/videos.json';
-import { DAYS, formatCountdown, nowIn, streamStatus } from './schedule.js';
 import NeonTunnel from './components/NeonTunnel.vue';
 import Icon from './components/Icon.vue';
 import { setupMotion } from './motion.js';
 
 const base = import.meta.env.BASE_URL;
-
-/* Ceasul pentru numărătoare și pentru „azi” din program */
-const now = ref(new Date());
-let timer = 0;
-onMounted(() => { timer = setInterval(() => { now.value = new Date(); }, 1000); });
-onBeforeUnmount(() => clearInterval(timer));
-
-const status = computed(() => streamStatus(site.schedule, site.timezone, now.value));
-const today = computed(() => nowIn(site.timezone, now.value).day);
-const countdown = computed(() => formatCountdown(status.value.onAir ? status.value.endsIn : status.value.startsIn));
-const slotLabel = computed(() => (status.value.slot ? `${DAYS[status.value.slot.day - 1]}, ${status.value.slot.start}` : ''));
-const endLabel = computed(() => status.value.slot?.end ?? 'târziu');
 
 /* Clipuri (generate la build de scripts/fetch-data.mjs) */
 const videos = videosData.items ?? [];
@@ -42,28 +29,10 @@ function ago(iso) {
 /* Player-ul Kick se încarcă doar la click: pagina rămâne rapidă și nu pune cookie-uri străine din prima. */
 const kickOn = ref(false);
 
-/* Setup CS2: apare doar ce e completat în site.js */
-const loadout = [
-  ['Crosshair', site.loadout.crosshair, true],
-  ['Sensibilitate', site.loadout.sensitivity],
-  ['DPI', site.loadout.dpi],
-  ['Rezoluție', site.loadout.resolution],
-  ['Mouse', site.loadout.mouse],
-  ['Căști', site.loadout.headset],
-].filter(([, v]) => v);
-const copied = ref(false);
-async function copy(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    copied.value = true;
-    setTimeout(() => { copied.value = false; }, 1800);
-  } catch { /* clipboard indisponibil: codul rămâne vizibil și selectabil */ }
-}
-
 const link = Object.fromEntries(site.links.map((l) => [l.id, l]));
-// Discord și Telegram au carduri mari separate; în grilă rămân platformele de conținut.
-const contentLinks = site.links.filter((l) => !['discord', 'telegram'].includes(l.id));
-const nav = [['#live', 'Live'], ['#clipuri', 'Clipuri'], ['#program', 'Program'], ['#despre', 'Despre'], ['#comunitate', 'Comunitate']];
+// Discord are cardul mare separat; în grilă rămân platformele de conținut.
+const contentLinks = site.links.filter((l) => l.id !== 'discord');
+const nav = [['#live', 'Live'], ['#clipuri', 'Clipuri'], ['#despre', 'Despre'], ['#comunitate', 'Comunitate']];
 const menuOpen = ref(false);
 
 /* Efectele de scroll și secțiunea curentă din meniu */
@@ -87,7 +56,7 @@ const year = new Date().getFullYear();
         <a v-for="[href, label] in nav" :key="href" :href="href" :class="{ active: activeSection === href.slice(1) }" :aria-current="activeSection === href.slice(1) ? 'true' : undefined" @click="menuOpen = false">{{ label }}</a>
       </nav>
       <a class="btn btn-live btn-sm nav-cta" :href="site.kick.url" target="_blank" rel="noopener">
-        <span class="live-dot" :class="{ on: status.onAir }"></span><span class="long">{{ status.onAir ? 'Acum în program' : 'Kick' }}</span><span class="short">Kick</span>
+        <Icon name="kick" :size="16" /> Kick
       </a>
       <button class="nav-toggle" type="button" :aria-expanded="menuOpen" aria-controls="mobile-menu" @click="menuOpen = !menuOpen">
         <Icon :name="menuOpen ? 'close' : 'menu'" :size="22" /><span class="sr">Meniu</span>
@@ -102,14 +71,8 @@ const year = new Date().getFullYear();
     <!-- HERO -->
     <section id="top" class="hero">
       <div class="hero-inner">
-        <a class="status-chip" :class="{ on: status.onAir }" :href="site.kick.url" target="_blank" rel="noopener">
-          <span class="live-dot" :class="{ on: status.onAir }"></span>
-          <template v-if="status.onAir">Acum e în program · intră pe Kick</template>
-          <template v-else>Următorul live: {{ slotLabel }} · <span class="mono">{{ countdown }}</span></template>
-        </a>
         <h1 class="title" data-text="XADRY">XADRY</h1>
-        <p class="tagline">{{ site.tagline }}<span class="sep">//</span>CS2 Premier &amp; FACEIT</p>
-        <p class="vibe">{{ site.vibe }}</p>
+        <p class="tagline"><template v-for="(t, i) in site.tags" :key="t"><span v-if="i" class="sep">//</span>{{ t }}</template></p>
         <div class="cta">
           <a class="btn btn-live" :href="site.kick.url" target="_blank" rel="noopener"><Icon name="kick" /> Intră pe live</a>
           <a class="btn btn-ghost" href="#clipuri"><Icon name="play" /> Ultimele clipuri</a>
@@ -140,13 +103,7 @@ const year = new Date().getFullYear();
           </button>
         </div>
         <aside class="live-side">
-          <div class="next-card hud reveal" style="--d: 1">
-            <p class="eyebrow">{{ status.onAir ? 'Acum în program' : 'Următorul live' }}</p>
-            <p class="next-when">{{ status.onAir ? `până la ${endLabel}` : slotLabel }}</p>
-            <p class="countdown mono" aria-live="off">{{ countdown }}</p>
-            <p class="small">{{ status.onAir ? 'rămas din intervalul de azi' : 'până începe' }} · ora României</p>
-          </div>
-          <a v-for="(id, i) in ['kick', 'twitch', 'youtube']" :key="id" class="watch-link reveal" :style="{ '--d': i + 2 }" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
+          <a v-for="(id, i) in ['kick', 'twitch', 'youtube']" :key="id" class="watch-link reveal" :style="{ '--d': i + 1 }" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
             <Icon :name="id" :size="22" />
             <span><strong>{{ link[id].label }}</strong><small>{{ link[id].note }}</small></span>
             <Icon name="arrow" :size="18" />
@@ -192,36 +149,12 @@ const year = new Date().getFullYear();
       <p v-else class="empty">Clipurile apar aici după primul build. Până atunci, le găsești pe <a :href="site.youtube.url" target="_blank" rel="noopener">YouTube</a>.</p>
     </section>
 
-    <!-- PROGRAM -->
-    <section id="program" class="section">
-      <header class="sec-head reveal">
-        <p class="eyebrow">Program</p>
-        <h2>Când intru live</h2>
-        <p class="lead">Ora României. Seara de vineri nu are oră de final.</p>
-      </header>
-      <ol class="week">
-        <li v-for="(s, i) in site.schedule" :key="s.day" class="day-card reveal" :style="{ '--d': i }" :class="{ today: s.day === today, onair: status.onAir && status.slot?.day === s.day, off: s.variable }">
-          <span class="day">{{ DAYS[s.day - 1] }}</span>
-          <span class="time mono">{{ s.variable ? 'variabil' : `${s.start} — ${s.end ?? '???'}` }}</span>
-          <span class="note">{{ s.variable ? 'Anunț pe Discord și Telegram' : s.note }}</span>
-          <span v-if="status.onAir && status.slot?.day === s.day" class="tag tag-live">Acum</span>
-          <span v-else-if="s.day === today" class="tag">Azi</span>
-        </li>
-      </ol>
-    </section>
-
     <!-- DESPRE -->
     <section id="despre" class="section about">
       <div class="about-main reveal">
         <p class="eyebrow">Despre</p>
-        <h2>Un fel de „game friend”</h2>
+        <h2>Mai multe detalii</h2>
         <p class="lead">{{ site.about }}</p>
-        <div class="on-stream">
-          <div v-for="(o, i) in site.onStream" :key="o.title" class="on-card reveal" :style="{ '--d': i + 1 }">
-            <h3>{{ o.title }}</h3>
-            <p>{{ o.text }}</p>
-          </div>
-        </div>
       </div>
       <aside class="rules hud reveal" style="--d: 2">
         <p class="eyebrow">Regulile chatului</p>
@@ -231,32 +164,15 @@ const year = new Date().getFullYear();
       </aside>
     </section>
 
-    <!-- SETUP (doar dacă e completat) -->
-    <section v-if="loadout.length" id="setup" class="section">
-      <header class="sec-head reveal">
-        <p class="eyebrow">Setup</p>
-        <h2>Cu ce joc</h2>
-      </header>
-      <dl class="loadout">
-        <div v-for="([label, value, copyable], i) in loadout" :key="label" class="load-item reveal" :class="{ wide: copyable }" :style="{ '--d': i }">
-          <dt>{{ label }}</dt>
-          <dd>
-            <code>{{ value }}</code>
-            <button v-if="copyable" type="button" class="btn btn-ghost btn-sm" @click="copy(value)"><Icon name="copy" :size="16" /> {{ copied ? 'Copiat' : 'Copiază' }}</button>
-          </dd>
-        </div>
-      </dl>
-    </section>
-
     <!-- COMUNITATE -->
     <section id="comunitate" class="section">
       <header class="sec-head reveal">
         <p class="eyebrow">Comunitate</p>
-        <h2>Intră în gașcă</h2>
-        <p class="lead">Anunțurile de live, programul de weekend și fazele bune ajung întâi pe Discord și Telegram.</p>
+        <h2>xAdry's Community</h2>
+        <p v-for="(p, i) in site.community" :key="i" class="lead">{{ p }}</p>
       </header>
       <div class="community">
-        <a v-for="(id, i) in ['discord', 'telegram']" :key="id" class="big-link hud reveal" :style="{ '--d': i }" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
+        <a v-for="id in ['discord']" :key="id" class="big-link hud reveal" :class="`p-${id}`" :href="link[id].url" target="_blank" rel="noopener">
           <Icon :name="id" :size="40" />
           <span><strong>{{ link[id].label }}</strong><small>{{ link[id].note }}</small></span>
           <span class="go">Intră <Icon name="arrow" :size="18" /></span>
