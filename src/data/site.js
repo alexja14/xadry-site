@@ -16,8 +16,8 @@ export const site = {
     { id: 'youtube', label: 'YouTube', note: 'Clipuri, gameplay și live-uri', url: 'https://www.youtube.com/@Adrian.Stefan7' },
     { id: 'tiktok', label: 'TikTok', note: 'Clipuri scurte și faze', url: 'https://www.tiktok.com/@adi_asz' },
     { id: 'instagram', label: 'Instagram', note: 'Actualizări zilnice', url: 'https://www.instagram.com/adi_asz/' },
-    // Serverul de Discord se schimbă: când e gata cel nou, pui aici linkul de invitație.
-    { id: 'discord', label: 'Discord', note: 'Comunitatea xAdry', url: 'https://discord.com/invite/9Z6ttGv9ac' },
+    // Invitația spre serverul „xAdry's Community” (nu expiră).
+    { id: 'discord', label: 'Discord', note: 'xAdry\'s Community', url: 'https://discord.gg/DQNQVVdpw8' },
   ],
 
   // Secțiunea „Mai multe detalii”
